@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+<img id="logo" src="assets/images/nirvana_logo_transparent.png">
+<canvas id="cIcon"></canvas>
+<canvas id="cHoriz"></canvas>
+<pre id="output"></pre>
+<script>
+const img = document.getElementById('logo');
+img.onload = () => {
+  // 1. Crop Icon (red & blue monogram)
+  // in 440x260 image:
+  // icon x is centered around 180-260, y: 10-105
+  const cIcon = document.getElementById('cIcon');
+  cIcon.width = 120;
+  cIcon.height = 110;
+  const ctxI = cIcon.getContext('2d');
+  ctxI.drawImage(img, 160, 10, 120, 110, 0, 0, 120, 110);
+  const iconData = cIcon.toDataURL('image/png');
+
+  // 2. Horizontal lockup: Icon on left, text on right
+  const cH = document.getElementById('cHoriz');
+  cH.width = 440;
+  cH.height = 110;
+  const ctxH = cH.getContext('2d');
+  // draw icon
+  ctxH.drawImage(img, 160, 10, 120, 110, 0, 0, 120, 110);
+  // draw NIRVANA and HOSPITAL
+  ctxH.drawImage(img, 20, 115, 400, 145, 125, 0, 310, 110);
+  const horizData = cH.toDataURL('image/png');
+
+  document.getElementById('output').textContent = JSON.stringify({
+    icon: iconData,
+    horiz: horizData
+  });
+};
+</script>
+</body>
+</html>

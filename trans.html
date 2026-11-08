@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>processing</title>
+</head>
+<body>
+<img id="img" src="assets/images/nirvana_official_logo.jpg">
+<canvas id="c"></canvas>
+<pre id="output"></pre>
+<script>
+const img = document.getElementById('img');
+img.onload = () => {
+  const c = document.getElementById('c');
+  c.width = img.naturalWidth;
+  c.height = img.naturalHeight;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const imgData = ctx.getImageData(0, 0, c.width, c.height);
+  const d = imgData.data;
+
+  // Process white background into transparent alpha
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i];
+    const g = d[i+1];
+    const b = d[i+2];
+
+    const minVal = Math.min(r, g, b);
+    if (minVal > 230) {
+      d[i+3] = 0;
+    } else if (minVal > 190 && r > 200 && g > 200 && b > 200) {
+      const factor = (230 - minVal) / 40;
+      d[i+3] = Math.round(factor * 255);
+    }
+  }
+
+  ctx.putImageData(imgData, 0, 0);
+  document.getElementById('output').textContent = c.toDataURL('image/png');
+};
+</script>
+</body>
+</html>
